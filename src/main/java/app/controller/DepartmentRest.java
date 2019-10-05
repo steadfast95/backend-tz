@@ -34,8 +34,6 @@ public class DepartmentRest {
             department.setParentDepartment(parent);
         }
         departmentRepository.save(department);
-
-
     }
 
     @DeleteMapping("/delete/{id}")
