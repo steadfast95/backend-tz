@@ -18,6 +18,6 @@ public class Employee {
     @ManyToOne()
     public Department department;
 
-    public Boolean isArchive;
+    public Boolean isArchive = false;
 
 }

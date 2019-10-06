@@ -1,5 +1,6 @@
 package app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class Department {
     @ManyToOne(cascade = CascadeType.ALL)
     public Department parentDepartment; // родитель(отдел)
 
+    @JsonIgnore
     @OneToMany(mappedBy = "department")
     public List<Employee> employeeList = new ArrayList<>();
 

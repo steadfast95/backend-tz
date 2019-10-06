@@ -38,7 +38,11 @@ public class DepartmentRest {
 
     @DeleteMapping("/delete/{id}")
     public void deleteDepartment(@PathVariable Integer id) {
-        departmentRepository.deleteById(id);
+        Department department = departmentRepository.findById(id).orElse(null);
+        if(department!=null){
+            department.setParentDepartment(null);
+        }
+        departmentRepository.delete(department);
     }
 
 }

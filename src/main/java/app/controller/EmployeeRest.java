@@ -1,6 +1,8 @@
 package app.controller;
 
+import app.model.Department;
 import app.model.Employee;
+import app.repository.DepartmentRepository;
 import app.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmployeeRest {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     @GetMapping("/get/{id}")
     public Employee getEmployee(@PathVariable Integer id) {
@@ -23,11 +26,18 @@ public class EmployeeRest {
     }
 
     @PutMapping("/add")
-    public void addEmplyee(@RequestBody Employee employee) {
+    public void addEmployee(@RequestBody Employee employee) {
+       if(employee!=null && employee.getDepartment()!=null){
+           Department department= departmentRepository.findById(employee.getDepartment().getId()).orElse(null);
+           if(department!=null){
+               department.getEmployeeList().add(employee);
+               departmentRepository.save(department);
+           }
+       }
         employeeRepository.save(employee);
     }
 
-    @DeleteMapping("/delet/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteEmployee(@PathVariable Integer id) {
         employeeRepository.deleteById(id);
     }
