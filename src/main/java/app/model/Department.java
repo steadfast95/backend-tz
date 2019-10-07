@@ -26,7 +26,7 @@ public class Department {
     public Department parentDepartment; // родитель(отдел)
 
     @JsonIgnore
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department",cascade = CascadeType.ALL)
     public List<Employee> employeeList = new ArrayList<>();
 
     @JsonProperty(value = "countEmployee")

@@ -2,7 +2,9 @@ package app.controller;
 
 import app.model.Department;
 import app.repository.DepartmentRepository;
+import app.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/department")
@@ -10,39 +12,30 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class DepartmentRest {
 
-    private final DepartmentRepository departmentRepository;
+    private final DepartmentService departmentService;
 
-    @GetMapping("/get/{id}")
-    public Department getDepartment(@PathVariable Integer id) {
-        return departmentRepository.findById(id).orElse(null);
+    @GetMapping("/{id}")
+    public ResponseEntity<Department> getDepartment(@PathVariable Integer id) {
+        Department department = departmentService.getDepartment(id);
+        if(department == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(department);
     }
 
-    @GetMapping("/list")
-    public Iterable<Department> getDepartmentList() {
-        return departmentRepository.findAll();
+    @GetMapping("/")
+    public ResponseEntity<Iterable<Department>> getDepartmentList() {
+        return ResponseEntity.ok(departmentService.getDepartmentList());
     }
 
-    @PutMapping("/add")
+    @PostMapping("/")
     public void addDepartment(@RequestBody Department department) {
-        if(department!=null && department.getParentDepartment()!=null){
-            Integer parentId = department.getParentDepartment().getId();
-            Department parent = departmentRepository.findById(parentId).orElse(null);
-            if (parent != null) {
-                parent.setIsParent(true);
-                departmentRepository.save(parent);
-            }
-            department.setParentDepartment(parent);
-        }
-        departmentRepository.save(department);
+        departmentService.addDepartment(department);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteDepartment(@PathVariable Integer id) {
-        Department department = departmentRepository.findById(id).orElse(null);
-        if(department!=null){
-            department.setParentDepartment(null);
-        }
-        departmentRepository.delete(department);
+        departmentService.deleteDepartment(id);
     }
 
 }
